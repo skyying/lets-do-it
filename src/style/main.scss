@@ -1,0 +1,226 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300ita‌​lic,400italic,500,500italic,700,700italic,900italic,900);
+@import "./reset.scss";
+
+body {
+    font-family:  "Roboto", "PingFang TC","微軟正黑體", "Microsoft JhengHei", "Helvetica Neue","Helvetica","Arial",sans-serif;
+    background-color: #D6DCE9;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+
+}
+
+h1 {
+    color: #4C4C4C;
+    font-size: 2.7em;
+    font-weight: 500;
+    margin-top: 20px;
+    margin-bottom: 36px;
+
+}
+.container {
+    background-color:#F7F7F7;
+    min-width: 700px;
+    margin: 100px auto;
+    min-height: 500px;
+    border-radius: 3px;
+    padding: 50px 100px 50px 100px;
+}
+
+nav {
+    display: flex;
+    margin-bottom: 40px;
+    li {
+        cursor:  pointer;
+        font-weight: 300;
+        list-style-type: none;
+        margin-right: 30px;
+        font-size: 20px;
+        letter-spacing: 1px;
+        // display: flex;
+        // justify-content: center;
+        b {
+            padding:0 10px;
+        }
+
+        color: #B1B1B1;
+        .border-line{
+            background-color: #333;
+            margin-top: 5px;
+
+            display: none;
+            padding-top: 7px;
+            width: 100%;
+            border-radius: 100px;
+            // display: none;
+        }
+    }
+    li.active {
+        color: #333;
+        .border-line {
+            height: 5px;
+            display: block;
+            background-color: #333;
+        }
+
+    }
+
+}
+
+.add-section {
+    position: relative;
+    max-width: 420px;
+    height: 50px;
+    button {
+        position: absolute;
+        right: 7px;
+        top:  calc( 50% - 20px );
+        height: 40px;
+        color: #fff;
+        span{
+            font-weight: 100;
+            font-size: 20px;
+            line-height: 2;
+        }
+        width: 40px;
+        background-color: #4A90E2;
+        border-radius: 50px;
+    }
+    input[type="text"]{
+        background-color:#F2F2F4;
+        padding: 10px 30px;
+        border: 1px solid #D9D9D9;
+        height: 50px;
+        width: 100%;
+        border-radius: 50px;
+        font-size: 16px;
+        &::placeholder{
+            color: #AFAFAF;
+            font-size: 16px;
+        }
+    }
+
+}
+
+
+.task-list{
+    padding: 36px 0;
+    max-width: 420px;
+    & > div {
+    }
+}
+
+.task {
+    position: relative;
+    padding-top: 15px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #E2E2E2;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    > span {
+        height: 30px;
+        width: 10px;
+        border-radius: 30px;
+        margin-right: 30px;
+    }
+}
+
+
+
+
+
+.checkbox-wrapper{
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 500;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .checkmark {
+        position: absolute;
+        top: 2px;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        border-radius: 3px;
+        background-color: transparent;
+        border: 1px solid #7A7A7A;
+        &:after{
+            content: "";
+            position: absolute;
+            display: none;
+        }
+    }
+
+    &:hover input ~ .checkmark {
+        border: none;
+        background-color: #ccc;
+    }
+
+    & input:checked ~ .checkmark {
+        background-color: #9B9B9B;
+        border: none;
+    }
+
+    input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    .checkmark:after {
+        left: 8px;
+        top: 4px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+}
+
+
+
+.new-task {
+    > span {
+        background-color: #4A90E2;
+    }
+
+}
+
+.completed-task {
+    > span {
+        background-color: #9B9B9B;
+    }
+    color: #9B9B9B;
+
+}
+
+.task .remove{
+    position: absolute;
+    right: 20px;
+    width: 20px;
+    display: none;
+    height: 20px;
+    font-size: 12px;
+    font-weight: 100;
+    border: 1px solid #333;
+    line-height: 0;
+    border-radius: 20px;
+}
+
+.task .show {
+    display: block;
+}

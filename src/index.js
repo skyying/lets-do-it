@@ -2,6 +2,7 @@ import "./style/main.scss";
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import icon from "./images/todo-design.png";
+import {createCategroy, RemoveBtn, LableItem} from "./components/common.js";
 
 class App extends Component {
     constructor(props) {
@@ -12,22 +13,25 @@ class App extends Component {
             visibility: -1,
             currentTask: null
         };
+
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.addTask = this.addTask.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.setTodo = this.setTodo.bind(this);
+        this.setTask = this.setTask.bind(this);
         this.setVisibility = this.setVisibility.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
-        this.setEnterTaskArea = this.setEnterTaskArea.bind(this);
+        this.setCurrentTask = this.setCurrentTask.bind(this);
     }
     addTask() {
-        let newTaskList = this.state.todo;
+        let newTaskList = this.state.todo.slice();
         let task = {
             id: newTaskList.length,
             state: false,
             value: this.state.value
         };
+
         newTaskList.push(task);
+
         this.setState({
             value: "",
             todo: newTaskList,
@@ -44,7 +48,7 @@ class App extends Component {
             )
         });
     }
-    setTodo(e) {
+    setTask(e) {
         let newTaskList = this.state.todo;
         newTaskList[e.currentTarget.dataset.id].state = !newTaskList[
             e.currentTarget.dataset.id
@@ -53,7 +57,12 @@ class App extends Component {
             todo: newTaskList
         });
     }
-    setEnterTaskArea(e) {
+    setVisibility(e) {
+        this.setState({
+            visibility: +e.currentTarget.dataset.visibility
+        });
+    }
+    setCurrentTask(e) {
         this.setState({
             currentTask: e.currentTarget.dataset.id
         });
@@ -68,17 +77,9 @@ class App extends Component {
             value: e.currentTarget.value
         });
     }
-    setVisibility(e) {
-        this.setState({
-            visibility: +e.currentTarget.dataset.visibility
-        });
-    }
+
     render() {
-        console.log(this.state);
-
         let todolist = this.state.todo;
-
-        // let sorted = Object.keys(todolist).sort((a, b) => +b.state - +a.state);
 
         let todoTasks = this.state.todo.filter(task => {
             return +this.state.visibility >= 0
@@ -86,20 +87,13 @@ class App extends Component {
                 : true;
         });
 
-        let category = ["All", "Todos", "Done"].map((item, index) => {
-            return (
-                <li
-                    key={`group-${index}`}
-                    onClick={this.setVisibility}
-                    data-visibility={`${index - 1}`}
-                    className={
-                        +this.state.visibility === index - 1 ? "active" : ""
-                    }>
-                    <b>{item}</b>
-                    <div className="border-line" />
-                </li>
-            );
-        });
+        // set empty state
+
+        let category = createCategroy(
+            ["All", "Todos", "Done"],
+            this.setVisibility,
+            this.state.visibility,
+        );
 
         let todos = todoTasks.map(item => {
             return (
@@ -109,39 +103,28 @@ class App extends Component {
                         "task " + (item.state ? "completed-task" : "new-task")
                     ).trim()}
                     key={item.id}
-                    onMouseEnter={this.setEnterTaskArea}
-                    onMouseLeave={this.setEnterTaskArea}>
+                    onMouseEnter={this.setCurrentTask}
+                    onMouseLeave={this.setCurrentTask}>
                     <span />
                     <div>
-                        <label
-                            className="checkbox-wrapper"
-                            htmlFor={`task-${item.id}`}>
-                            {item.value}
-                            <input
-                                id={`task-${item.id}`}
-                                type="checkbox"
-                                data-id={item.id}
-                                onChange={this.setTodo}
-                                checked={+item.state > 0}
-                            />
-                            <span className="checkmark" />
-                        </label>
+                        <LableItem item={item} action={this.setTask} />
                     </div>
-                    <button
-                        data-id={item.id}
-                        className={`remove ${
+
+                    <RemoveBtn
+                        id={item.id}
+                        action={this.deleteTask}
+                        name={`remove ${
                             this.state.currentTask &&
                             this.state.currentTask == item.id
                                 ? "show"
                                 : ""
                         }`}
-                        onClick={this.deleteTask}>
-                        x
-                    </button>
+                    />
                 </div>
             );
         });
-        if (!todos.length) {
+
+        if (!todoTasks.length) {
             todos = (
                 <div className="empty">
                     <img src={icon} />
@@ -170,7 +153,7 @@ class App extends Component {
                         <span>+</span>
                     </button>
                 </div>
-                <div className="task-list" onMouseLeave={this.setEnterTaskArea}>
+                <div className="task-list" onMouseLeave={this.setCurrentTask}>
                     {todos}
                 </div>
             </div>

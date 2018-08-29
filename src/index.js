@@ -1,6 +1,7 @@
 import "./style/main.scss";
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
+import icon from "./images/todo-design.png";
 
 class App extends Component {
     constructor(props) {
@@ -140,6 +141,17 @@ class App extends Component {
                 </div>
             );
         });
+        if (!todos.length) {
+            todos = (
+                <div className="empty">
+                    <img src={icon} />
+                    <p>
+                        You have no tasks to do!<br />
+                        Enjoy your <b>homework</b>!
+                    </p>
+                </div>
+            );
+        }
 
         return (
             <div>

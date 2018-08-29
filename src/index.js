@@ -1,5 +1,5 @@
 import "./style/main.scss";
-import React, { Component } from "react";
+import React, {Component} from "react";
 import ReactDOM from "react-dom";
 
 class App extends Component {
@@ -30,20 +30,16 @@ class App extends Component {
         this.setState({
             value: "",
             todo: newTaskList,
-            visibility: this.state.visibility === 1 ? -1 : this.state.visibility
+            visibility:
+                this.state.visibility === 1 ? -1 : this.state.visibility
         });
     }
     deleteTask(e) {
         let newTaskList = this.state.todo.slice();
         newTaskList.splice(e.currentTarget.dataset.id, 1);
-        console.log(
-            "after delete",
-            newTaskList.map((item, index) => Object.assign(item, { id: index }))
-        );
-
         this.setState({
             todo: newTaskList.map((item, index) =>
-                Object.assign(item, { id: index })
+                Object.assign(item, {id: index}),
             )
         });
     }
@@ -57,8 +53,6 @@ class App extends Component {
         });
     }
     setEnterTaskArea(e) {
-        console.log(e.currentTarget);
-        console.log(e.currentTarget.dataset.id);
         this.setState({
             currentTask: e.currentTarget.dataset.id
         });
@@ -99,8 +93,7 @@ class App extends Component {
                     data-visibility={`${index - 1}`}
                     className={
                         +this.state.visibility === index - 1 ? "active" : ""
-                    }
-                >
+                    }>
                     <b>{item}</b>
                     <div className="border-line" />
                 </li>
@@ -116,14 +109,12 @@ class App extends Component {
                     ).trim()}
                     key={item.id}
                     onMouseEnter={this.setEnterTaskArea}
-                    onMouseLeave={this.setEnterTaskArea}
-                >
+                    onMouseLeave={this.setEnterTaskArea}>
                     <span />
                     <div>
                         <label
                             className="checkbox-wrapper"
-                            htmlFor={`task-${item.id}`}
-                        >
+                            htmlFor={`task-${item.id}`}>
                             {item.value}
                             <input
                                 id={`task-${item.id}`}
@@ -143,8 +134,7 @@ class App extends Component {
                                 ? "show"
                                 : ""
                         }`}
-                        onClick={this.deleteTask}
-                    >
+                        onClick={this.deleteTask}>
                         x
                     </button>
                 </div>
@@ -164,12 +154,13 @@ class App extends Component {
                     />
                     <button
                         onClick={this.addTask}
-                        disabled={!this.state.value.length}
-                    >
+                        disabled={!this.state.value.length}>
                         <span>+</span>
                     </button>
                 </div>
-                <div className="task-list">{todos}</div>
+                <div className="task-list" onMouseLeave={this.setEnterTaskArea}>
+                    {todos}
+                </div>
             </div>
         );
     }

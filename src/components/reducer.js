@@ -17,15 +17,15 @@ export const todoReducer = (state, action) => {
                     todo: [
                         ...state.todo.slice(
                             0,
-                            getTargetIndx(state.todo, action.id),
+                            getTargetIndex(state.todo, action.id),
                         ),
                         ...state.todo.slice(
-                            getTargetIndx(state.todo, action.id) + 1,
+                            getTargetIndex(state.todo, action.id) + 1,
                         )
                     ]
                 });
             case "TOGGLE_TASK": {
-                let index = getTargetIndx(state.todo, action.id);
+                let index = getTargetIndex(state.todo, action.id);
                 let targetTodo = Object.assign({}, state.todo[index], {
                     isDone: !state.todo[index].isDone
                 });
@@ -48,5 +48,5 @@ export const todoReducer = (state, action) => {
     }
 };
 
-const getTargetIndx = (arr, targetId) =>
+const getTargetIndex = (arr, targetId) =>
     arr.map(task => task.id).indexOf(targetId);

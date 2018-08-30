@@ -2,7 +2,12 @@ import "./style/main.scss";
 import React from "react";
 import ReactDOM from "react-dom";
 import icon from "./images/todo-design.png";
-import {createCategroy, RemoveBtn, LableItem} from "./components/common.js";
+import {
+    randomLetter,
+    createCategroy,
+    RemoveBtn,
+    LableItem,
+} from "./components/common.js";
 import {createStore} from "redux";
 import {todoReducer} from "./components/reducer.js";
 
@@ -10,30 +15,23 @@ let initialState = {
     todo: [],
     value: "",
     visibility: -1,
-    currentTask: null
+    currentTask: null,
 };
 
 let store = createStore(todoReducer, initialState);
 
-console.log(store.getState());
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = store.getState();
-
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
-
         this.addTask = this.addTask.bind(this);
         this.toggleTask = this.toggleTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
-
         this.setVisibility = this.setVisibility.bind(this);
         this.setCurrentTask = this.setCurrentTask.bind(this);
-        // this.unSubscribe = this.unSubscribe.bind(this);
-        // this.update = this.update.bind(this);
     }
-
     componentDidMount() {
         this.unSubscribe = store.subscribe(this.update.bind(this));
     }
@@ -44,60 +42,30 @@ class App extends React.Component {
         this.setState(store.getState());
     }
     addTask() {
-        store.dispatch({
-            type: "ADD_TASK",
-            add: list => {
-                return [
-                    ...list,
-                    {
-                        id: list.length,
-                        state: false,
-                        value: this.state.value
-                    }
-                ];
-            }
-        });
+        store.dispatch({type: "ADD_TASK"});
     }
     deleteTask(e) {
-        let targetId = +e.currentTarget.dataset.id;
         store.dispatch({
             type: "DELETE_TASK",
-            delete: list => {
-                let index = list
-                    .map((task, index) => task.id)
-                    .indexOf(targetId);
-                return [...list.slice(0, index), ...list.slice(index + 1)];
-            }
+            id: +e.currentTarget.dataset.id,
         });
     }
     toggleTask(e) {
-        let targetId = +e.currentTarget.dataset.id;
         store.dispatch({
             type: "TOGGLE_TASK",
-            toggle: list => {
-                let index = list
-                    .map((task, index) => task.id)
-                    .indexOf(targetId);
-                let [copyTodo] = list.slice(index, index + 1);
-                let newTodo = Object.assign({}, copyTodo, {
-                    state: !copyTodo.state
-                });
-                return [
-                    ...list.slice(0, index),
-                    newTodo,
-                    ...list.slice(index + 1)
-                ];
-            }
+            id: +e.currentTarget.dataset.id,
         });
     }
     setVisibility(e) {
-        this.setState({
-            visibility: +e.currentTarget.dataset.visibility
+        store.dispatch({
+            type: "SWITCH_VISIBILITY",
+            visibility: +e.currentTarget.dataset.visibility,
         });
     }
     setCurrentTask(e) {
-        this.setState({
-            currentTask: e.currentTarget.dataset.id
+        store.dispatch({
+            type: "SET_CURRENT_TASK",
+            id: e.currentTarget.dataset.id,
         });
     }
     handleKeyPress(e) {
@@ -106,17 +74,16 @@ class App extends React.Component {
         }
     }
     handleChange(e) {
-        this.setState({
-            value: e.currentTarget.value
+        store.dispatch({
+            type: "UPDATE_VALUE",
+            value: e.currentTarget.value,
         });
     }
     render() {
-        console.log(this.state);
         let todolist = this.state.todo;
-
         let todoTasks = this.state.todo.filter(task => {
-            return +this.state.visibility >= 0
-                ? +task.state === +this.state.visibility
+            return this.state.visibility >= 0
+                ? +task.isDone === this.state.visibility
                 : true;
         });
 
@@ -131,13 +98,12 @@ class App extends React.Component {
                 <div
                     data-id={item.id}
                     className={(
-                        "task " + (item.state ? "completed-task" : "new-task")
+                        "task " + (item.isDone ? "completed-task" : "new-task")
                     ).trim()}
-                    key={item.id}
+                    key={`todo-${item.id + randomLetter()}`}
                     onMouseEnter={this.setCurrentTask}
                     onMouseLeave={this.setCurrentTask}>
                     <span />
-
                     <div>
                         <LableItem item={item} action={this.toggleTask} />
                     </div>

@@ -27,8 +27,13 @@ export const LableItem = ({item, action}) => (
             type="checkbox"
             data-id={item.id}
             onChange={action}
-            checked={+item.state > 0}
+            checked={+item.isDone > 0}
         />
         <span className="checkmark" />
     </label>
 );
+
+export const randomLetter = () => {
+    let letter = "abcdefghijklmnopqrstuvxyz";
+    return letter[Math.floor(Math.random() * letter.length)];
+};

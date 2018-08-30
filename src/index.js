@@ -3,64 +3,91 @@ import React from "react";
 import ReactDOM from "react-dom";
 import icon from "./images/todo-design.png";
 import {createCategroy, RemoveBtn, LableItem} from "./components/common.js";
+import {createStore} from "redux";
+import {todoReducer} from "./components/reducer.js";
 
+let initialState = {
+    todo: [],
+    value: "",
+    visibility: -1,
+    currentTask: null
+};
+
+let store = createStore(todoReducer, initialState);
+
+console.log(store.getState());
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            todo: [],
-            value: "",
-            visibility: -1,
-            currentTask: null
-        };
+        this.state = store.getState();
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
 
         this.addTask = this.addTask.bind(this);
-        this.setTask = this.setTask.bind(this);
+        this.toggleTask = this.toggleTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
 
         this.setVisibility = this.setVisibility.bind(this);
         this.setCurrentTask = this.setCurrentTask.bind(this);
+        // this.unSubscribe = this.unSubscribe.bind(this);
+        // this.update = this.update.bind(this);
     }
 
+    componentDidMount() {
+        this.unSubscribe = store.subscribe(this.update.bind(this));
+    }
+    componentDidUnMount() {
+        this.unSubscribe();
+    }
+    update() {
+        this.setState(store.getState());
+    }
     addTask() {
-        let newTaskList = this.state.todo.slice();
-
-        let newTask = {
-            id: newTaskList.length,
-            state: false,
-            value: this.state.value
-        };
-
-        newTaskList.push(newTask);
-
-        this.setState({
-            value: "",
-            todo: newTaskList,
-            visibility:
-                this.state.visibility === 1 ? -1 : this.state.visibility
+        store.dispatch({
+            type: "ADD_TASK",
+            add: list => {
+                return [
+                    ...list,
+                    {
+                        id: list.length,
+                        state: false,
+                        value: this.state.value
+                    }
+                ];
+            }
         });
     }
-
     deleteTask(e) {
-        let newTaskList = this.state.todo.slice();
-        newTaskList.splice(e.currentTarget.dataset.id, 1);
-        this.setState({
-            todo: newTaskList.map((item, index) =>
-                Object.assign(item, {id: index}),
-            )
+        let targetId = +e.currentTarget.dataset.id;
+        store.dispatch({
+            type: "DELETE_TASK",
+            delete: list => {
+                let index = list
+                    .map((task, index) => task.id)
+                    .indexOf(targetId);
+                return [...list.slice(0, index), ...list.slice(index + 1)];
+            }
         });
     }
-
-    setTask(e) {
-        let newTaskList = this.state.todo;
-        newTaskList[e.currentTarget.dataset.id].state = !newTaskList[
-            e.currentTarget.dataset.id
-        ].state;
-        this.setState({
-            todo: newTaskList
+    toggleTask(e) {
+        let targetId = +e.currentTarget.dataset.id;
+        store.dispatch({
+            type: "TOGGLE_TASK",
+            toggle: list => {
+                let index = list
+                    .map((task, index) => task.id)
+                    .indexOf(targetId);
+                let [copyTodo] = list.slice(index, index + 1);
+                let newTodo = Object.assign({}, copyTodo, {
+                    state: !copyTodo.state
+                });
+                return [
+                    ...list.slice(0, index),
+                    newTodo,
+                    ...list.slice(index + 1)
+                ];
+            }
         });
     }
     setVisibility(e) {
@@ -112,7 +139,7 @@ class App extends React.Component {
                     <span />
 
                     <div>
-                        <LableItem item={item} action={this.setTask} />
+                        <LableItem item={item} action={this.toggleTask} />
                     </div>
 
                     <RemoveBtn

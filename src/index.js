@@ -6,7 +6,7 @@ import {
     randomLetter,
     createCategroy,
     RemoveBtn,
-    LableItem,
+    LableItem
 } from "./components/common.js";
 import {createStore} from "redux";
 import {todoReducer} from "./components/reducer.js";
@@ -15,7 +15,7 @@ let initialState = {
     todo: [],
     value: "",
     visibility: -1,
-    currentTask: null,
+    currentTask: null
 };
 
 let store = createStore(todoReducer, initialState);
@@ -47,25 +47,25 @@ class App extends React.Component {
     deleteTask(e) {
         store.dispatch({
             type: "DELETE_TASK",
-            id: +e.currentTarget.dataset.id,
+            id: +e.currentTarget.dataset.id
         });
     }
     toggleTask(e) {
         store.dispatch({
             type: "TOGGLE_TASK",
-            id: +e.currentTarget.dataset.id,
+            id: +e.currentTarget.dataset.id
         });
     }
     setVisibility(e) {
         store.dispatch({
             type: "SWITCH_VISIBILITY",
-            visibility: +e.currentTarget.dataset.visibility,
+            visibility: +e.currentTarget.dataset.visibility
         });
     }
     setCurrentTask(e) {
         store.dispatch({
             type: "SET_CURRENT_TASK",
-            id: e.currentTarget.dataset.id,
+            id: e.currentTarget.dataset.id
         });
     }
     handleKeyPress(e) {
@@ -76,7 +76,7 @@ class App extends React.Component {
     handleChange(e) {
         store.dispatch({
             type: "UPDATE_VALUE",
-            value: e.currentTarget.value,
+            value: e.currentTarget.value
         });
     }
     render() {

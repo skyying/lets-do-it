@@ -1,10 +1,10 @@
 import "./style/main.scss";
-import React, {Component} from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import icon from "./images/todo-design.png";
 import {createCategroy, RemoveBtn, LableItem} from "./components/common.js";
 
-class App extends Component {
+class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,22 +15,26 @@ class App extends Component {
         };
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
-        this.addTask = this.addTask.bind(this);
         this.handleChange = this.handleChange.bind(this);
+
+        this.addTask = this.addTask.bind(this);
         this.setTask = this.setTask.bind(this);
-        this.setVisibility = this.setVisibility.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
+
+        this.setVisibility = this.setVisibility.bind(this);
         this.setCurrentTask = this.setCurrentTask.bind(this);
     }
+
     addTask() {
         let newTaskList = this.state.todo.slice();
-        let task = {
+
+        let newTask = {
             id: newTaskList.length,
             state: false,
             value: this.state.value
         };
 
-        newTaskList.push(task);
+        newTaskList.push(newTask);
 
         this.setState({
             value: "",
@@ -39,6 +43,7 @@ class App extends Component {
                 this.state.visibility === 1 ? -1 : this.state.visibility
         });
     }
+
     deleteTask(e) {
         let newTaskList = this.state.todo.slice();
         newTaskList.splice(e.currentTarget.dataset.id, 1);
@@ -48,6 +53,7 @@ class App extends Component {
             )
         });
     }
+
     setTask(e) {
         let newTaskList = this.state.todo;
         newTaskList[e.currentTarget.dataset.id].state = !newTaskList[
@@ -77,8 +83,8 @@ class App extends Component {
             value: e.currentTarget.value
         });
     }
-
     render() {
+        console.log(this.state);
         let todolist = this.state.todo;
 
         let todoTasks = this.state.todo.filter(task => {
@@ -86,8 +92,6 @@ class App extends Component {
                 ? +task.state === +this.state.visibility
                 : true;
         });
-
-        // set empty state
 
         let category = createCategroy(
             ["All", "Todos", "Done"],
@@ -106,6 +110,7 @@ class App extends Component {
                     onMouseEnter={this.setCurrentTask}
                     onMouseLeave={this.setCurrentTask}>
                     <span />
+
                     <div>
                         <LableItem item={item} action={this.setTask} />
                     </div>
